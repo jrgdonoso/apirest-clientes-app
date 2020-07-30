@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: ubuntu
+Build-Jdk: 11.0.8
+Implementation-Title: spring-boot-backend-apirest
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.bolsadeideas.springboot.backend.apirest
+Implementation-URL: http://projects.spring.io/spring-boot/spring-boot-st
+ arter-parent/spring-boot-backend-apirest/
+Created-By: Maven Integration for Eclipse
+
