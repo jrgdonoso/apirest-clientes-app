@@ -1,15 +1,22 @@
 package com.bolsadeideas.springboot.backend.apirest.controllers;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,10 +85,30 @@ public class ClienteRestController {
 	
 	@PostMapping("/clientes")
 	@ResponseStatus(HttpStatus.CREATED)
-	public  ResponseEntity<?> create(@RequestBody Cliente cli) {
+	public  ResponseEntity<?> create(@Valid @RequestBody Cliente cli, BindingResult result ) {
+		
 		
 		Cliente cliente;
 		Map<String, Object> response=new HashMap<>();
+		
+		
+		if( result.hasErrors() ) {
+		
+			/*List<String> errores=new ArrayList<>();
+			for(FieldError err: result.getFieldErrors() ){
+				errores.add("campo "+err.getField()+" : "+err.getDefaultMessage());
+			}*/
+			
+			List<String> errores= result.getFieldErrors()
+					.stream()
+					.map(err-> "campo "+err.getField()+" : "+err.getDefaultMessage())
+					.collect(Collectors.toList());
+		
+			response.put("errors", errores);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
+		
+	
 		
 		//cli.setCreateAt(new Date()); //Esto se puede reemplazar por un prePersist desde la entidad. ver Cliente.java
 		try {
@@ -112,10 +139,23 @@ public class ClienteRestController {
 	
 	@PutMapping("/clientes/{id}")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> update(@RequestBody Cliente cli, @PathVariable Long id) {
+	public ResponseEntity<?> update(@Valid @RequestBody Cliente cli,BindingResult result, @PathVariable Long id) {
 		
 		Cliente cliActual;
 		Map<String, Object> response=new HashMap<>();
+		
+		
+		if( result.hasErrors() ) {
+			
+			//Aprender de esta estructura con tream y map
+			List<String> errores= result.getFieldErrors()
+					.stream()
+					.map(err-> "campo "+err.getField()+" : "+err.getDefaultMessage())
+					.collect(Collectors.toList());
+		
+			response.put("errors", errores);
+			return new ResponseEntity<Map<String, Object>>(response, HttpStatus.BAD_REQUEST);
+		}
 		
 
 		try {
